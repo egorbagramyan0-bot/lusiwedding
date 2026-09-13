@@ -61,7 +61,7 @@ export default function RootLayout({
       <body className="antialiased">
         <a
           href="#works"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:bg-wine-deep focus:px-4 focus:py-2 focus:text-cream"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:bg-wine-veil focus:px-4 focus:py-2 focus:text-cream"
         >
           Перейти к содержанию
         </a>

@@ -20,7 +20,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative isolate flex min-h-[calc(100svh-var(--header-h))] flex-col justify-end overflow-hidden bg-wine-deep lg:block lg:h-[min(56vw,806px)] lg:min-h-0"
+      className="relative isolate flex min-h-[calc(100svh-var(--header-h))] flex-col justify-end overflow-hidden bg-wine-veil lg:block lg:h-[min(56vw,806px)] lg:min-h-0"
     >
       <div className="absolute inset-0 -z-10">
         <picture>
@@ -41,7 +41,7 @@ export function Hero() {
           платье, и золото с кремовым на нём пропадают. На широких экранах
           вордмарк лежит на тёмных портьерах и затемнения не требует.
         */}
-        <div className="absolute inset-0 bg-gradient-to-t from-wine-deep via-wine-deep/40 to-transparent lg:hidden" />
+        <div className="absolute inset-0 bg-gradient-to-t from-wine-veil via-wine-veil/40 to-transparent lg:hidden" />
       </div>
 
       <Container className="relative pb-14 lg:h-full lg:pb-0">

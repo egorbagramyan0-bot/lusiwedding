@@ -60,7 +60,7 @@ export function Socials({
               ) : (
                 <span
                   aria-describedby={item.meta ? noteId : undefined}
-                  className={cn(chip, "text-cream/40")}
+                  className={cn(chip, "text-cream/55")}
                 >
                   {label}
                 </span>
@@ -72,7 +72,7 @@ export function Socials({
 
       <p
         id={noteId}
-        className="mt-4 max-w-[44ch] text-[0.6875rem] leading-relaxed text-cream/35"
+        className="mt-4 max-w-[44ch] text-[0.6875rem] leading-relaxed text-cream/55"
       >
         {socialsNote}
       </p>

@@ -8,7 +8,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer id="contacts" className="border-t border-gold/15 bg-wine-deep">
+    <footer id="contacts" className="border-t border-gold/15 bg-wine-bar">
       <Container className="py-14 lg:py-20">
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between lg:gap-16">
           <div className="text-gold">
@@ -23,7 +23,7 @@ export function SiteFooter() {
             <ul className="mt-5 flex flex-col gap-3">
               {contacts.map((item) => (
                 <li key={item.label} className="text-sm">
-                  <span className="text-cream/45">{item.label}: </span>
+                  <span className="text-cream/55">{item.label}: </span>
                   {item.href ? (
                     <a
                       href={item.href}
@@ -42,7 +42,7 @@ export function SiteFooter() {
 
         <Socials place="footer" className="mt-14 border-t border-gold/15 pt-10" />
 
-        <p className="mt-14 text-caption text-cream/35 uppercase">
+        <p className="mt-14 text-caption text-cream/55 uppercase">
           &copy; {year} {site.name}
         </p>
       </Container>

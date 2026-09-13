@@ -106,7 +106,7 @@ export function SiteMenu() {
         logoUrl="/logo-gold.png"
         logoHref="#top"
         /* золотая и тёмно-винная шторки перед самой панелью */
-        colors={["#a8814f", "#3e0c15"]}
+        colors={["#a8814f", "#521220"]}
         accentColor="#c9a063"
         menuButtonColor="#c9a063"
         openMenuButtonColor="#c9a063"

@@ -14,7 +14,7 @@ import { navigation } from "@/content/site";
 export function SiteHeader() {
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-gold/15 bg-wine-deep">
+      <header className="sticky top-0 z-50 border-b border-gold/15 bg-wine-bar">
         <div className="mx-auto flex h-(--header-h) w-full max-w-[calc(var(--container-site)+var(--gutter)*2)] items-center justify-between px-(--gutter)">
           <a href="#top" className="-my-3 hidden items-center py-3 text-gold lg:flex">
             <Logo className="h-7" />
