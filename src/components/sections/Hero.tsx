@@ -45,13 +45,33 @@ export function Hero() {
       </div>
 
       <Container className="relative pb-14 lg:h-full lg:pb-0">
-        <p className="font-display text-[19vw] leading-[0.78] text-gold lg:absolute lg:top-[34.1%] lg:left-(--gutter) lg:text-[min(16.36vw,14.57rem)]">
-          {site.wordmark.first}
-        </p>
+        {/*
+          Ширина «WEDDING» — множитель 4.740 к прежнему кеглю
+          min(16.36vw, 14.57rem), которым набирался текст: строка тянется
+          и упирается в максимум ровно как раньше и так же доходит до
+          правого края.
 
-        <p className="font-display text-[19vw] leading-[0.78] text-cream lg:absolute lg:top-[62%] lg:left-[20%] lg:text-[min(16.36vw,14.57rem)]">
-          {site.wordmark.second}
-        </p>
+          Ширина «LUSI» из неё и выведена — 4.740 x 2.2126 / 4.9402,
+          то есть отношение пропорций двух файлов. Задавать её «на глаз»
+          нельзя: у картинок высота равна высоте букв, поэтому одинаковый
+          кегль строк — это равная высота рамок, а не равная ширина.
+
+          Высота обеих строк выходит на четверть больше прежней:
+          начертание знака плотнее Bodoni. Поэтому «LUSI» поднят с 34.1%
+          до 29% — пара строк осталась на месте по центру и с прежним
+          просветом в 43px.
+        */}
+        <span
+          role="img"
+          aria-label={site.wordmark.first}
+          className="wordmark wordmark-lusi block w-[40.5vw] text-gold lg:absolute lg:top-[29%] lg:left-(--gutter) lg:w-[min(34.73vw,30.93rem)]"
+        />
+
+        <span
+          role="img"
+          aria-label={site.wordmark.second}
+          className="wordmark wordmark-wedding block w-[90.5vw] text-cream lg:absolute lg:top-[62%] lg:left-[20%] lg:w-[min(77.55vw,69.06rem)]"
+        />
 
         <div className="mt-9 lg:absolute lg:top-[69%] lg:left-(--gutter) lg:mt-0">
           <span aria-hidden className="hairline w-14" />

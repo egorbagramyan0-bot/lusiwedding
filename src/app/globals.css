@@ -246,6 +246,45 @@
     -webkit-mask-position: center;
     mask-position: center;
   }
+
+  /*
+    Вордмарк на первом экране — тот же приём, что и у логотипа шапки.
+
+    Файлы заказчика чёрные на прозрачном, а в герое строки золотая и
+    кремовая. Маска снимает вопрос: форму берём из файла, цвет — из
+    currentColor, и обе строки красятся теми же классами, что раньше
+    красили текст.
+
+    Картинки обрезаны по краю штриха (public/wordmark-*.png), поэтому
+    рамка элемента совпадает с буквами: позиционировать можно прямо
+    по ней, без поправок на поля холста.
+
+    Обрезка идёт по порогу альфы, а не по любому непрозрачному пикселю:
+    вокруг «LUSI» в исходнике лежит почти прозрачный ореол, и по нему
+    рамка выходила на четверть выше букв — строка рисовалась заметно
+    мельче «WEDDING».
+  */
+  .wordmark {
+    background-color: currentColor;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: left center;
+    mask-position: left center;
+  }
+
+  .wordmark-lusi {
+    aspect-ratio: 843 / 381;
+    -webkit-mask-image: url("/wordmark-lusi.png");
+    mask-image: url("/wordmark-lusi.png");
+  }
+
+  .wordmark-wedding {
+    aspect-ratio: 1487 / 301;
+    -webkit-mask-image: url("/wordmark-wedding.png");
+    mask-image: url("/wordmark-wedding.png");
+  }
 }
 
 /*
