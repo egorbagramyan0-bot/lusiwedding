@@ -39,7 +39,7 @@ export function PackagesList() {
           <summary className="grid cursor-pointer list-none grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 py-7 [&::-webkit-details-marker]:hidden">
             {/* Надписи «Чаще всего выбирают» здесь нет: в компактном
                 списке популярный формат помечает только золотая кнопка. */}
-            <h3 className="font-serif text-[1.6rem] leading-none text-wine-ink">
+            <h3 className="font-heading text-[1.95rem] leading-none text-wine-ink">
               {item.name}
             </h3>
 
@@ -54,7 +54,7 @@ export function PackagesList() {
               {item.audience}
             </span>
 
-            <span className="mt-4 block text-[1.25rem] leading-none tracking-[0.01em] text-wine-ink tabular-nums">
+            <span className="mt-4 block text-[1.25rem] leading-none font-medium tracking-[0.01em] text-wine-ink tabular-nums">
               {item.price}
             </span>
           </summary>

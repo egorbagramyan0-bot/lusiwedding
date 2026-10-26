@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bodoni_Moda, Cormorant, Tenor_Sans } from "next/font/google";
+import { Alumni_Sans, Manrope } from "next/font/google";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { Motion } from "@/components/motion/Motion";
@@ -8,35 +8,30 @@ import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 /**
- * Bodoni Moda — цифры 01–04 в разделе «Подход» и нумерация пунктов меню.
- * Вордмарк первого экрана им больше не набирается — там знак заказчика.
+ * Alumni Sans — заголовки, цифры этапов, подписи капсом и пункты меню.
  *
- * Кириллицы в шрифте нет (доступны только latin, latin-ext, math и
- * symbols), поэтому русский текст им набирать нельзя — для заголовков
- * рядом работает Cormorant. Ось opsz выкручена в 96 прямо в вёрстке:
- * на крупном кегле дидона рисует более тонкие волосяные линии.
+ * Узкий гротеск с ровным штрихом, того же склада, что знак LUSI WEDDING:
+ * у округлых букв прямые бока, концы срезаны ровно. Подписи капсом с
+ * широкой разрядкой продолжают EVENT DECOR под знаком.
+ *
+ * Шрифт переменный: нужны 200 (цифры), 300 (заголовки) и 500 (подписи),
+ * и все они приходят одним файлом. Кириллица в нём есть, знак ₽ тоже.
  */
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  axes: ["opsz"],
-  variable: "--font-bodoni",
+const alumni = Alumni_Sans({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-alumni",
   display: "swap",
 });
 
-/** Cormorant — русские заголовки. Тот же высокий контраст, что у Bodoni. */
-const cormorant = Cormorant({
+/**
+ * Manrope — основной текст, цены и поля формы. Тоже переменный.
+ *
+ * Знак ₽ в нём есть — у прежнего Tenor Sans его не было, и в ценах «₽»
+ * подставлялся из запасного шрифта.
+ */
+const manrope = Manrope({
   subsets: ["latin", "cyrillic"],
-  // 300 не нужен: тонкое начертание нигде не используется, а грузилось бы
-  weight: "400",
-  variable: "--font-cormorant",
-  display: "swap",
-});
-
-/** Tenor Sans — меню, подписи и основной текст. Только начертание 400. */
-const tenor = Tenor_Sans({
-  subsets: ["latin", "cyrillic"],
-  weight: "400",
-  variable: "--font-tenor",
+  variable: "--font-manrope",
   display: "swap",
 });
 
@@ -71,7 +66,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ru" className={`${bodoni.variable} ${cormorant.variable} ${tenor.variable}`}>
+    <html lang="ru" className={`${alumni.variable} ${manrope.variable}`}>
       <head>
         {/*
           Без JS анимации не запустятся, а начальные состояния из

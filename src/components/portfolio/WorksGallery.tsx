@@ -78,7 +78,7 @@ export function WorksGallery({ works }: { works: Work[] }) {
                     <span className="block text-caption text-gold-dim uppercase">
                       {work.date}
                     </span>
-                    <span className="mt-3 flex items-baseline gap-3 font-serif text-[clamp(1.15rem,1.5vw,1.45rem)] leading-tight text-wine-ink">
+                    <span className="mt-3 flex items-baseline gap-3 font-heading font-light text-[clamp(1.4rem,1.85vw,1.75rem)] leading-tight text-wine-ink">
                       {work.title}
                       <span
                         aria-hidden
@@ -136,7 +136,7 @@ export function WorksGallery({ works }: { works: Work[] }) {
                     <span aria-hidden>&larr;</span>
                     Предыдущая
                   </span>
-                  <span className="mt-3 block font-serif text-xl text-cream">
+                  <span className="mt-3 block font-heading font-light text-[1.5rem] text-cream">
                     {previous?.title}
                   </span>
                 </button>
@@ -150,7 +150,7 @@ export function WorksGallery({ works }: { works: Work[] }) {
                     Следующая
                     <span aria-hidden>&rarr;</span>
                   </span>
-                  <span className="mt-3 block font-serif text-xl text-cream">
+                  <span className="mt-3 block font-heading font-light text-[1.5rem] text-cream">
                     {next?.title}
                   </span>
                 </button>

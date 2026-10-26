@@ -52,7 +52,7 @@ export function Process() {
                       <span
                         data-rise
                         data-rise-delay={index * 90 + 100}
-                        className="block font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-none text-gold"
+                        className="block font-heading text-[clamp(3rem,6vw,5.5rem)] leading-none font-extralight text-gold"
                       >
                         {step.number}
                       </span>
@@ -67,7 +67,7 @@ export function Process() {
                   </div>
 
                   <div className="min-w-0">
-                    <h3 className="text-[0.8125rem] tracking-[0.14em] text-gold-soft uppercase sm:mt-6">
+                    <h3 className="text-caption text-gold-soft uppercase sm:mt-6">
                       {step.title}
                     </h3>
 

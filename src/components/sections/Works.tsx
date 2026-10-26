@@ -16,7 +16,7 @@ export function Works() {
         <div className="flex items-center gap-8">
           <h2
             data-split
-            className="font-serif text-[clamp(1.6rem,3.4vw,2.5rem)] leading-tight"
+            className="font-heading text-[clamp(1.95rem,4.15vw,3.05rem)] leading-tight"
           >
             {worksTitle}
           </h2>

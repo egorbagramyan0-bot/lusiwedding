@@ -24,7 +24,7 @@ export function Team() {
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-20">
           <h2
             data-split
-            className="max-w-[16ch] font-serif text-[clamp(1.8rem,3.6vw,2.85rem)] leading-[1.15] text-cream"
+            className="max-w-[16ch] font-heading text-[clamp(2.2rem,4.4vw,3.5rem)] leading-[1.1] text-cream"
           >
             {teamTitle}
           </h2>
@@ -58,7 +58,7 @@ export function Team() {
                 sizes="(max-width: 640px) 62vw, (max-width: 1024px) 33vw, 20vw"
               />
 
-              <h3 className="mt-5 font-serif text-[1.0625rem] leading-snug text-cream">
+              <h3 className="mt-5 font-heading text-[1.3rem] leading-snug text-cream">
                 {member.role}
               </h3>
 

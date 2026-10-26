@@ -25,7 +25,7 @@ export function Packages() {
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-end lg:gap-20">
           <h2
             data-split
-            className="max-w-[24ch] font-serif text-[clamp(1.8rem,3.6vw,2.85rem)] leading-[1.15]"
+            className="max-w-[24ch] font-heading text-[clamp(2.2rem,4.4vw,3.5rem)] leading-[1.1]"
           >
             {packagesTitle}
           </h2>
@@ -72,7 +72,7 @@ export function Packages() {
                 {item.eyebrow}
               </span>
 
-              <h3 className="mt-4 font-serif text-[clamp(1.5rem,2.4vw,2rem)] leading-none">
+              <h3 className="mt-4 font-heading text-[clamp(1.85rem,2.95vw,2.45rem)] leading-none">
                 {item.name}
               </h3>
 
@@ -88,7 +88,7 @@ export function Packages() {
                 <span className="block text-caption text-wine-ink/65 uppercase">
                   {item.priceLabel}
                 </span>
-                <span className="mt-2 block text-[clamp(1.25rem,1.7vw,1.5rem)] leading-none tracking-[0.01em] tabular-nums">
+                <span className="mt-2 block text-[clamp(1.25rem,1.7vw,1.5rem)] leading-none font-medium tracking-[0.01em] tabular-nums">
                   {item.price}
                 </span>
               </div>
@@ -99,7 +99,7 @@ export function Packages() {
                     key={block.title}
                     className="disclosure group border-t border-wine-ink/15 last:border-b"
                   >
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-caption tracking-[0.1em] text-wine-ink/70 uppercase transition-colors hover:text-wine-ink [&::-webkit-details-marker]:hidden">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-caption text-wine-ink/70 uppercase transition-colors hover:text-wine-ink [&::-webkit-details-marker]:hidden">
                       {block.title}
                       <span
                         aria-hidden

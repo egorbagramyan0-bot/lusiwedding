@@ -32,13 +32,13 @@ export function WorkDetails({ work }: { work: Work }) {
             {work.date}
           </p>
 
-          <h2 className="mt-5 font-serif text-[clamp(2rem,5vw,3.75rem)] leading-[1.1] text-cream">
+          <h2 className="mt-5 font-heading text-[clamp(2.45rem,6.1vw,4.6rem)] leading-[1.05] text-cream">
             {work.title}
           </h2>
 
           <span aria-hidden className="hairline mt-8 w-20" />
 
-          <p className="mt-8 max-w-[34ch] font-serif text-[clamp(1.125rem,2.2vw,1.5rem)] leading-[1.5] text-cream/85">
+          <p className="mt-8 max-w-[34ch] font-light text-[clamp(1.0625rem,1.8vw,1.25rem)] leading-[1.65] text-cream/85">
             {work.lead}
           </p>
         </header>

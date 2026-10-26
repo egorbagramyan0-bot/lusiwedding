@@ -11,12 +11,12 @@ import { cn } from "@/lib/cn";
  * никуда хуже честной заглушки.
  */
 /*
-  Кегль, трекинг и поля мельче, чем у капса на остальном сайте: три
-  кнопки должны вставать в одну строку даже на экране 360px. Высота
-  при этом остаётся 44px — под палец.
+  Шрифт подписей — узкий, как у капса на остальном сайте, но кегль и
+  разрядка чуть меньше: три кнопки должны вставать в одну строку даже
+  на экране 360px. Высота при этом остаётся 44px — под палец.
 */
 const chip =
-  "flex min-h-11 items-center whitespace-nowrap border border-gold/25 px-2.5 text-[0.6875rem] tracking-[0.08em] uppercase transition-colors";
+  "flex min-h-11 items-center whitespace-nowrap border border-gold/25 px-2.5 font-heading text-[0.875rem] font-medium tracking-[0.16em] uppercase transition-colors";
 
 export function Socials({
   place,

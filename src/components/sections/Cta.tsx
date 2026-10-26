@@ -95,7 +95,7 @@ export function Cta() {
           <div>
             <h2
               data-split
-              className="font-serif text-[clamp(1.75rem,3.6vw,2.75rem)] leading-tight"
+              className="font-heading text-[clamp(2.15rem,4.4vw,3.35rem)] leading-tight"
             >
               {cta.title}
             </h2>
@@ -269,7 +269,9 @@ function Field({
       <label htmlFor={id} className={labelText}>
         {label}
         {hint ? (
-          <span className="ml-2 normal-case text-wine-ink/65">{hint}</span>
+          <span className="ml-2 font-sans text-[0.8125rem] font-normal tracking-normal normal-case text-wine-ink/65">
+            {hint}
+          </span>
         ) : null}
       </label>
       <div className="mt-2">{children}</div>

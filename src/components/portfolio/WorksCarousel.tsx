@@ -291,7 +291,7 @@ export function WorksCarousel({
         <span className="block text-caption text-gold-dim uppercase">
           {current.date}
         </span>
-        <span className="mt-3 flex items-baseline gap-3 font-serif text-[1.35rem] leading-tight text-wine-ink">
+        <span className="mt-3 flex items-baseline gap-3 font-heading font-light text-[1.65rem] leading-tight text-wine-ink">
           {current.title}
           <span aria-hidden className="text-gold-dim">
             &rarr;

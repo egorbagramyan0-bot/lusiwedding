@@ -33,7 +33,7 @@ export function Statement() {
         <div className="lg:max-w-[46%]">
           <h2
             data-split
-            className="font-serif text-[clamp(2rem,7vw,3.5rem)] leading-[1.22] text-cream"
+            className="font-heading text-[clamp(2.45rem,8.5vw,4.25rem)] leading-[1.12] text-cream"
           >
             {statement.lines.map((line) => (
               <span key={line} className="block">

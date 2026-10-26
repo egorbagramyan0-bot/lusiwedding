@@ -59,9 +59,14 @@
   --color-alert: #9c2b20;
 
   /* Bodoni — только латиница: цифры и нумерация. Кириллицы в нём нет. */
-  --font-display: var(--font-bodoni), "Didot", "Bodoni MT", serif;
-  --font-serif: var(--font-cormorant), "Times New Roman", serif;
-  --font-sans: var(--font-tenor), system-ui, -apple-system, sans-serif;
+  /*
+    Роли названы по назначению, а не по гарнитуре: при следующей смене
+    шрифтов достаточно поменять значения здесь и в layout.tsx.
+    heading — заголовки, цифры, подписи капсом, пункты меню;
+    sans — текст, цены, поля формы.
+  */
+  --font-heading: var(--font-alumni), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-manrope), system-ui, -apple-system, sans-serif;
 
   --container-site: 1240px;
 
@@ -71,9 +76,14 @@
   --text-h3--line-height: 1.25;
   --text-lead: clamp(1rem, 1.6vw, 1.125rem);
   --text-lead--line-height: 1.7;
-  --text-caption: 0.75rem;
-  --text-caption--line-height: 1.5;
-  --text-caption--letter-spacing: 0.18em;
+  /*
+    Подписи капсом набраны узким Alumni Sans, а у него мелкий очко и
+    узкие буквы: на прежних 12px он читался бы мельче всего остального.
+    Отсюда 15px и широкая разрядка — как у EVENT DECOR под знаком.
+  */
+  --text-caption: 0.9375rem;
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: 0.28em;
 }
 
 @layer base {
@@ -140,21 +150,25 @@
   h1,
   h2,
   h3 {
-    font-family: var(--font-serif);
-    font-weight: 400;
+    font-family: var(--font-heading);
+    font-weight: 300;
     text-wrap: balance;
   }
 }
 
-@layer components {
+@layer utilities {
   /*
-    Крупный кегль просит более тонких волосяных линий, чем мелкий, —
-    за это у Bodoni отвечает ось оптического размера.
+    Подписи капсом — даты, надзаголовки, меню, кнопки, подписи полей —
+    набраны шрифтом заголовков. Утилита text-caption из @theme задаёт
+    только кегль, интерлиньяж и разрядку, гарнитуру дописываем здесь.
   */
-  .font-display {
-    font-variation-settings: "opsz" 96;
+  .text-caption {
+    font-family: var(--font-heading);
+    font-weight: 500;
   }
+}
 
+@layer components {
   /*
     Лента киноплёнки. Дорожка содержит два одинаковых набора кадров
     и сдвигается ровно на половину своей ширины — стык незаметен.
@@ -412,9 +426,10 @@
 }
 
 .lusi-menu .sm-toggle {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   gap: 0.75rem;
 }
@@ -426,15 +441,15 @@
   padding: calc(var(--header-h) + 2.5rem) var(--gutter) 2.5rem;
 }
 
-/* Пункты — наша антиква, без капса и отрицательного трекинга. */
+/* Пункты — шрифт заголовков, без капса и отрицательного трекинга. */
 .lusi-menu .sm-panel-list {
   gap: 0.25rem;
 }
 
 .lusi-menu .sm-panel-item {
-  font-family: var(--font-serif);
-  font-size: 2rem;
-  font-weight: 400;
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 300;
   line-height: 1.2;
   letter-spacing: 0;
   text-transform: none;
@@ -453,14 +468,15 @@
   left: 0;
   /*
     Номер стоит на одной базовой линии с пунктом. Значение посчитано из
-    метрик: у пункта 32px Cormorant базовая линия на 29.3px от верха
-    строки, у номера 13px Bodoni — на 12.6px от его собственного верха.
-    Разница и есть смещение.
+    метрик Alumni Sans: у пункта 40px базовая линия на 36px от верха
+    строки, у номера 15px — на 13.5px от его собственного верха.
+    Разница и есть смещение. Сменится шрифт — пересчитать.
   */
-  top: 1.05rem;
+  top: 1.406rem;
   line-height: 1.2;
-  font-family: var(--font-display);
-  font-size: 0.8125rem;
+  font-family: var(--font-heading);
+  font-weight: 200;
+  font-size: 0.9375rem;
   color: var(--color-gold);
   opacity: calc(var(--sm-num-opacity, 0) * 0.7);
 }
