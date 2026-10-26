@@ -65,7 +65,7 @@ export function WorksGallery({ works }: { works: Work[] }) {
                 <figure className="m-0">
                   {/* обрезку держит обёртка: у самого кадра при наведении
                       увеличивается и его собственная рамка */}
-                  <div className="overflow-hidden">
+                  <div data-settle className="overflow-hidden">
                     <MediaFrame
                       slot={work.cover}
                       tone="light"

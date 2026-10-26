@@ -19,10 +19,12 @@ import { packages } from "@/content/packages";
 export function PackagesList() {
   return (
     <div className="mt-12 lg:hidden">
-      {packages.map((item) => (
+      {packages.map((item, index) => (
         <details
           key={item.id}
           name="package"
+          data-reveal
+          data-reveal-delay={index * 100}
           className="disclosure group border-t border-wine-ink/15 last:border-b"
         >
           {/*

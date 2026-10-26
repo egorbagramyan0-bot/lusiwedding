@@ -297,6 +297,81 @@
 }
 
 /*
+  Начальные состояния анимаций. Сами анимации — в
+  src/components/motion/Motion.tsx (anime.js), здесь только то, с чего
+  они стартуют.
+
+  Почему в CSS, а не в скрипте: страница приходит с сервера готовой и
+  рисуется раньше, чем загружается JS. Если прятать элементы из скрипта,
+  они сначала мелькнут на месте, потом исчезнут и только потом въедут.
+
+  Всё внутри no-preference: тем, кто выключил анимацию в системе,
+  ничего не прячется даже на миг. Без JS всё возвращает <noscript>
+  в layout.tsx.
+
+  Фото героя не прячется — только слегка увеличено. Это главный элемент
+  первой загрузки (LCP), и прозрачность отодвинула бы его метрику на
+  время анимации.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  [data-rule],
+  [data-hero-rule] {
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  /* поднимается из-под края родителя — у родителя overflow: clip */
+  [data-rise] {
+    transform: translateY(105%);
+  }
+
+  /* до разбивки на строки: иначе заголовок мелькнёт целиком */
+  [data-split] {
+    visibility: hidden;
+  }
+
+  [data-hero-photo] {
+    transform: scale(1.08);
+  }
+
+  [data-wordmark] {
+    clip-path: inset(100% 0 0 0);
+    transform: translateY(18%);
+  }
+
+  [data-hero-fade] {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  /*
+    Страховка первого экрана. Если скрипт не загрузится или упадёт,
+    название агентства не должно остаться невидимым: через 3,5 с оно
+    проявится само. К этому моменту вступление давно закончено и стоит
+    в тех же конечных значениях, поэтому в обычном случае страховка
+    ничего не меняет.
+  */
+  [data-wordmark],
+  [data-hero-rule],
+  [data-hero-fade] {
+    animation: hero-failsafe 0s 3.5s forwards;
+  }
+}
+
+@keyframes hero-failsafe {
+  to {
+    clip-path: inset(0);
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/*
   Переопределения для StaggeredMenu из React Bits.
 
   Сам компонент (components/reactbits/) не трогаем — так его можно

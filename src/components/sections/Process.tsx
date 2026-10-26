@@ -19,7 +19,10 @@ export function Process() {
 
         <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,2fr)] lg:items-center lg:gap-20">
           <Reveal>
-            <div className="relative mx-auto w-[72%] max-w-[19rem] sm:w-[52%] lg:mx-0 lg:w-full lg:max-w-none">
+            <div
+              data-settle
+              className="relative mx-auto w-[72%] max-w-[19rem] sm:w-[52%] lg:mx-0 lg:w-full lg:max-w-none"
+            >
               <span
                 aria-hidden
                 className="absolute -top-4 -left-5 h-full w-full border border-gold/45"
@@ -43,15 +46,22 @@ export function Process() {
               <li key={step.number}>
                 <Reveal delay={index * 90} className="flex gap-5 sm:block">
                   <div className="w-14 shrink-0 sm:w-auto">
-                    <span
-                      aria-hidden
-                      className="block font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-none text-gold"
-                    >
-                      {step.number}
+                    {/* цифра выходит из-под своей нижней кромки — обрезку
+                        держит обёртка */}
+                    <span aria-hidden className="block overflow-clip">
+                      <span
+                        data-rise
+                        data-rise-delay={index * 90 + 100}
+                        className="block font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-none text-gold"
+                      >
+                        {step.number}
+                      </span>
                     </span>
 
                     <span
                       aria-hidden
+                      data-rule
+                      data-rule-delay={index * 90 + 350}
                       className="hairline mt-4 w-10 sm:mt-6 sm:w-14"
                     />
                   </div>

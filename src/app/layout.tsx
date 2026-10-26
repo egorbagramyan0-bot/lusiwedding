@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bodoni_Moda, Cormorant, Tenor_Sans } from "next/font/google";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { Motion } from "@/components/motion/Motion";
 import { site } from "@/content/site";
 import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
@@ -72,9 +73,13 @@ export default function RootLayout({
   return (
     <html lang="ru" className={`${bodoni.variable} ${cormorant.variable} ${tenor.variable}`}>
       <head>
-        {/* без JS блоки не должны остаться прозрачными */}
+        {/*
+          Без JS анимации не запустятся, а начальные состояния из
+          globals.css спрятали бы блоки навсегда. Список атрибутов —
+          тот же, что в блоке начальных состояний.
+        */}
         <noscript>
-          <style>{`[data-reveal]{opacity:1 !important;transform:none !important}`}</style>
+          <style>{`[data-reveal],[data-rule],[data-rise],[data-split],[data-hero-photo],[data-wordmark],[data-hero-rule],[data-hero-fade]{opacity:1 !important;transform:none !important;visibility:visible !important;clip-path:none !important;animation:none !important}`}</style>
         </noscript>
       </head>
       <body className="antialiased">
@@ -87,6 +92,8 @@ export default function RootLayout({
         <SiteHeader />
         <main id="main">{children}</main>
         <SiteFooter />
+        {/* после всей разметки: анимации ищут уже отрисованные элементы */}
+        <Motion />
       </body>
     </html>
   );

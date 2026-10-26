@@ -25,6 +25,7 @@ export function Hero() {
   return (
     <section
       id="top"
+      data-hero
       className="relative isolate flex min-h-[calc(100svh-var(--header-h))] flex-col justify-end overflow-hidden bg-wine-veil lg:block lg:h-[min(56vw,806px)] lg:min-h-0"
     >
       <div className="absolute inset-0 -z-10">
@@ -59,6 +60,7 @@ export function Hero() {
             src={media.heroMobile.src ?? undefined}
             alt={media.hero.label}
             fetchPriority="high"
+            data-hero-photo
             className="h-full w-full object-cover object-center"
           />
         </picture>
@@ -116,8 +118,11 @@ export function Hero() {
         </h1>
 
         <div className="mt-9 lg:absolute lg:top-[69%] lg:left-(--gutter) lg:mt-0">
-          <span aria-hidden className="hairline w-14" />
-          <p className="mt-4 max-w-[19ch] text-sm leading-relaxed text-gold-soft">
+          <span aria-hidden data-hero-rule className="hairline w-14" />
+          <p
+            data-hero-fade
+            className="mt-4 max-w-[19ch] text-sm leading-relaxed text-gold-soft"
+          >
             <Typo>{site.tagline}</Typo>
           </p>
         </div>

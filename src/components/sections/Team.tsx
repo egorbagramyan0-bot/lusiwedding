@@ -21,47 +21,53 @@ export function Team() {
       className="border-t border-gold/15 bg-wine py-(--section-y)"
     >
       <Container>
-        <Reveal>
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-20">
-            <h2 className="max-w-[16ch] font-serif text-[clamp(1.8rem,3.6vw,2.85rem)] leading-[1.15] text-cream">
-              {teamTitle}
-            </h2>
-            <p className="max-w-[42ch] text-sm leading-relaxed text-cream/55">
-              {teamLead}
-            </p>
-          </div>
-        </Reveal>
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-20">
+          <h2
+            data-split
+            className="max-w-[16ch] font-serif text-[clamp(1.8rem,3.6vw,2.85rem)] leading-[1.15] text-cream"
+          >
+            {teamTitle}
+          </h2>
+          <p
+            data-reveal
+            data-reveal-delay={200}
+            className="max-w-[42ch] text-sm leading-relaxed text-cream/55"
+          >
+            {teamLead}
+          </p>
+        </div>
 
-        <Reveal delay={120}>
-          {/*
-            На телефоне — одна лента, которая листается пальцем: пятеро
-            в сетке из двух колонок занимали три экрана. Лента выходит за
-            контейнер на ширину поля, чтобы карточки уезжали под край, а
-            первая всё равно вставала по общей линии.
-            С 640px это снова обычная сетка.
-          */}
-          <ul className="rail mt-14 flex snap-x snap-mandatory gap-4 overflow-x-auto -mx-(--gutter) px-(--gutter) scroll-pl-(--gutter) sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-x-6 sm:gap-y-10 sm:overflow-visible sm:px-0 lg:mt-20 lg:grid-cols-5 lg:gap-x-8">
-            {team.map((member) => (
-              <li
-                key={member.id}
-                className="w-[62vw] shrink-0 snap-start sm:w-auto"
-              >
-                <MediaFrame
-                  slot={member.photo}
-                  sizes="(max-width: 640px) 62vw, (max-width: 1024px) 33vw, 20vw"
-                />
+        {/*
+          На телефоне — одна лента, которая листается пальцем: пятеро
+          в сетке из двух колонок занимали три экрана. Лента выходит за
+          контейнер на ширину поля, чтобы карточки уезжали под край, а
+          первая всё равно вставала по общей линии.
+          С 640px это снова обычная сетка.
+        */}
+        <ul className="rail mt-14 flex snap-x snap-mandatory gap-4 overflow-x-auto -mx-(--gutter) px-(--gutter) scroll-pl-(--gutter) sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-x-6 sm:gap-y-10 sm:overflow-visible sm:px-0 lg:mt-20 lg:grid-cols-5 lg:gap-x-8">
+          {team.map((member, index) => (
+            <li
+              key={member.id}
+              // карточки входят по очереди, слева направо
+              data-reveal
+              data-reveal-delay={index * 90}
+              className="w-[62vw] shrink-0 snap-start sm:w-auto"
+            >
+              <MediaFrame
+                slot={member.photo}
+                sizes="(max-width: 640px) 62vw, (max-width: 1024px) 33vw, 20vw"
+              />
 
-                <h3 className="mt-5 font-serif text-[1.0625rem] leading-snug text-cream">
-                  {member.role}
-                </h3>
+              <h3 className="mt-5 font-serif text-[1.0625rem] leading-snug text-cream">
+                {member.role}
+              </h3>
 
-                <p className="mt-2 text-[0.8125rem] leading-relaxed text-cream/50">
-                  {member.description}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </Reveal>
+              <p className="mt-2 text-[0.8125rem] leading-relaxed text-cream/50">
+                {member.description}
+              </p>
+            </li>
+          ))}
+        </ul>
 
         <Reveal delay={200}>
           <p className="mt-14 max-w-[52ch] border-t border-gold/20 pt-8 text-sm leading-relaxed text-cream/60 lg:mt-20">

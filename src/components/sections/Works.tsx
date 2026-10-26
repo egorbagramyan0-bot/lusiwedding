@@ -14,11 +14,16 @@ export function Works() {
     <section id="works" className="bg-ivory py-(--section-y) text-wine-ink">
       <div className="w-full px-(--gutter)">
         <div className="flex items-center gap-8">
-          <h2 className="font-serif text-[clamp(1.6rem,3.4vw,2.5rem)] leading-tight">
+          <h2
+            data-split
+            className="font-serif text-[clamp(1.6rem,3.4vw,2.5rem)] leading-tight"
+          >
             {worksTitle}
           </h2>
           <span
             aria-hidden
+            data-rule
+            data-rule-delay={300}
             className="hairline ml-auto hidden w-16 bg-gold-dim sm:block"
           />
         </div>

@@ -20,13 +20,21 @@ import { Typo } from "@/components/ui/Typo";
 export function Statement() {
   return (
     <section id="about" className="relative overflow-hidden bg-wine">
-      <div className="absolute -right-[5%] bottom-0 hidden h-[92%] w-[58%] lg:block">
+      {/* стол поднимается из-под нижней кромки секции и встаёт на неё */}
+      <div
+        data-reveal
+        data-reveal-delay={150}
+        className="absolute -right-[5%] bottom-0 hidden h-[92%] w-[58%] lg:block"
+      >
         <MediaFrame slot={media.statement} fill sizes="58vw" />
       </div>
 
       <Container className="relative pt-(--section-y) lg:py-(--section-y)">
-        <Reveal className="lg:max-w-[46%]">
-          <h2 className="font-serif text-[clamp(2rem,7vw,3.5rem)] leading-[1.22] text-cream">
+        <div className="lg:max-w-[46%]">
+          <h2
+            data-split
+            className="font-serif text-[clamp(2rem,7vw,3.5rem)] leading-[1.22] text-cream"
+          >
             {statement.lines.map((line) => (
               <span key={line} className="block">
                 {line}
@@ -34,12 +42,21 @@ export function Statement() {
             ))}
           </h2>
 
-          <span aria-hidden className="hairline mt-10 w-20" />
+          <span
+            aria-hidden
+            data-rule
+            data-rule-delay={350}
+            className="hairline mt-10 w-20"
+          />
 
-          <p className="mt-8 max-w-[42ch] text-lead text-cream/60">
+          <p
+            data-reveal
+            data-reveal-delay={250}
+            className="mt-8 max-w-[42ch] text-lead text-cream/60"
+          >
             <Typo>{statement.body}</Typo>
           </p>
-        </Reveal>
+        </div>
       </Container>
 
       <Reveal className="mt-12 lg:hidden" delay={120}>

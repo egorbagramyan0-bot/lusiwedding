@@ -1,6 +1,5 @@
 import { Container } from "@/components/ui/Container";
 import { PackagesList } from "@/components/sections/PackagesList";
-import { Reveal } from "@/components/ui/Reveal";
 import { packages, packagesLead, packagesTitle } from "@/content/packages";
 import { cn } from "@/lib/cn";
 
@@ -23,120 +22,126 @@ export function Packages() {
   return (
     <section id="packages" className="bg-ivory py-(--section-y) text-wine-ink">
       <Container>
-        <Reveal>
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-end lg:gap-20">
-            <h2 className="max-w-[24ch] font-serif text-[clamp(1.8rem,3.6vw,2.85rem)] leading-[1.15]">
-              {packagesTitle}
-            </h2>
-            <p className="max-w-[46ch] text-sm leading-relaxed text-wine-ink/70">
-              {packagesLead}
-            </p>
-          </div>
-        </Reveal>
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-end lg:gap-20">
+          <h2
+            data-split
+            className="max-w-[24ch] font-serif text-[clamp(1.8rem,3.6vw,2.85rem)] leading-[1.15]"
+          >
+            {packagesTitle}
+          </h2>
+          <p
+            data-reveal
+            data-reveal-delay={200}
+            className="max-w-[46ch] text-sm leading-relaxed text-wine-ink/70"
+          >
+            {packagesLead}
+          </p>
+        </div>
 
         {/* На телефоне тарифы идут раскрывающимся списком. */}
-        <Reveal delay={120}>
-          <PackagesList />
-        </Reveal>
+        <PackagesList />
 
-        {/* От 1024px — три колонки рядом, чтобы форматы сравнивались взглядом. */}
-        <Reveal delay={120}>
-          <ul
-            className={cn(
-              "mt-14 hidden gap-y-12 lg:mt-20 lg:-mx-10 lg:grid lg:grid-cols-3 lg:gap-y-0",
-              // семь строк: надпись, название, аудитория, описание,
-              // цена, раскрывающиеся списки и кнопка
-              "lg:grid-rows-[auto_auto_auto_auto_auto_1fr_auto]",
-            )}
-          >
-            {packages.map((item) => (
-              <li
-                key={item.id}
+        {/*
+          От 1024px — три колонки рядом, чтобы форматы сравнивались
+          взглядом. Колонки входят по очереди, слева направо.
+        */}
+        <ul
+          className={cn(
+            "mt-14 hidden gap-y-12 lg:mt-20 lg:-mx-10 lg:grid lg:grid-cols-3 lg:gap-y-0",
+            // семь строк: надпись, название, аудитория, описание,
+            // цена, раскрывающиеся списки и кнопка
+            "lg:grid-rows-[auto_auto_auto_auto_auto_1fr_auto]",
+          )}
+        >
+          {packages.map((item, index) => (
+            <li
+              key={item.id}
+              data-reveal
+              data-reveal-delay={index * 120}
+              className={cn(
+                "flex flex-col lg:row-span-7 lg:grid lg:grid-rows-subgrid",
+                column,
+              )}
+            >
+              <span
                 className={cn(
-                  "flex flex-col lg:row-span-7 lg:grid lg:grid-rows-subgrid",
-                  column,
+                  "text-caption uppercase",
+                  item.featured ? "text-gold-dim" : "text-wine-ink/65",
                 )}
               >
-                <span
+                {item.eyebrow}
+              </span>
+
+              <h3 className="mt-4 font-serif text-[clamp(1.5rem,2.4vw,2rem)] leading-none">
+                {item.name}
+              </h3>
+
+              <span className="mt-4 text-caption text-wine-ink/65 uppercase">
+                {item.audience}
+              </span>
+
+              <p className="mt-6 text-[0.9375rem] leading-relaxed text-wine-ink/70 sm:text-sm">
+                {item.description}
+              </p>
+
+              <div className="mt-8">
+                <span className="block text-caption text-wine-ink/65 uppercase">
+                  {item.priceLabel}
+                </span>
+                <span className="mt-2 block text-[clamp(1.25rem,1.7vw,1.5rem)] leading-none tracking-[0.01em] tabular-nums">
+                  {item.price}
+                </span>
+              </div>
+
+              <div className="mt-10">
+                {item.blocks.map((block) => (
+                  <details
+                    key={block.title}
+                    className="disclosure group border-t border-wine-ink/15 last:border-b"
+                  >
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-caption tracking-[0.1em] text-wine-ink/70 uppercase transition-colors hover:text-wine-ink [&::-webkit-details-marker]:hidden">
+                      {block.title}
+                      <span
+                        aria-hidden
+                        className="text-lg leading-none text-gold-dim transition-transform duration-300 group-open:rotate-45 motion-reduce:transform-none"
+                      >
+                        +
+                      </span>
+                    </summary>
+
+                    <ul className="pb-5">
+                      {block.items.map((line) => (
+                        <li
+                          key={line}
+                          className="flex gap-3 py-1.5 text-[0.8125rem] leading-relaxed text-wine-ink/70"
+                        >
+                          <span aria-hidden className="text-gold-dim">
+                            &mdash;
+                          </span>
+                          {line}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                ))}
+              </div>
+
+              <div className="mt-10">
+                <a
+                  href="#lead"
                   className={cn(
-                    "text-caption uppercase",
-                    item.featured ? "text-gold-dim" : "text-wine-ink/65",
+                    "block border px-5 py-4 text-center text-caption uppercase transition-colors",
+                    item.featured
+                      ? "border-gold-dim bg-gold-dim text-ivory hover:bg-transparent hover:text-gold-dim"
+                      : "border-wine-ink/25 text-wine-ink hover:border-gold-dim hover:text-gold-dim",
                   )}
                 >
-                  {item.eyebrow}
-                </span>
-
-                <h3 className="mt-4 font-serif text-[clamp(1.5rem,2.4vw,2rem)] leading-none">
-                  {item.name}
-                </h3>
-
-                <span className="mt-4 text-caption text-wine-ink/65 uppercase">
-                  {item.audience}
-                </span>
-
-                <p className="mt-6 text-[0.9375rem] leading-relaxed text-wine-ink/70 sm:text-sm">
-                  {item.description}
-                </p>
-
-                <div className="mt-8">
-                  <span className="block text-caption text-wine-ink/65 uppercase">
-                    {item.priceLabel}
-                  </span>
-                  <span className="mt-2 block text-[clamp(1.25rem,1.7vw,1.5rem)] leading-none tracking-[0.01em] tabular-nums">
-                    {item.price}
-                  </span>
-                </div>
-
-                <div className="mt-10">
-                  {item.blocks.map((block) => (
-                    <details
-                      key={block.title}
-                      className="disclosure group border-t border-wine-ink/15 last:border-b"
-                    >
-                      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-caption tracking-[0.1em] text-wine-ink/70 uppercase transition-colors hover:text-wine-ink [&::-webkit-details-marker]:hidden">
-                        {block.title}
-                        <span
-                          aria-hidden
-                          className="text-lg leading-none text-gold-dim transition-transform duration-300 group-open:rotate-45 motion-reduce:transform-none"
-                        >
-                          +
-                        </span>
-                      </summary>
-
-                      <ul className="pb-5">
-                        {block.items.map((line) => (
-                          <li
-                            key={line}
-                            className="flex gap-3 py-1.5 text-[0.8125rem] leading-relaxed text-wine-ink/70"
-                          >
-                            <span aria-hidden className="text-gold-dim">
-                              &mdash;
-                            </span>
-                            {line}
-                          </li>
-                        ))}
-                      </ul>
-                    </details>
-                  ))}
-                </div>
-
-                <div className="mt-10">
-                  <a
-                    href="#lead"
-                    className={cn(
-                      "block border px-5 py-4 text-center text-caption uppercase transition-colors",
-                      item.featured
-                        ? "border-gold-dim bg-gold-dim text-ivory hover:bg-transparent hover:text-gold-dim"
-                        : "border-wine-ink/25 text-wine-ink hover:border-gold-dim hover:text-gold-dim",
-                    )}
-                  >
-                    {item.action}
-                  </a>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </Reveal>
+                  {item.action}
+                </a>
+              </div>
+            </li>
+          ))}
+        </ul>
       </Container>
     </section>
   );

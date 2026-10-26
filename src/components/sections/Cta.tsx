@@ -92,20 +92,29 @@ export function Cta() {
     >
       <Container>
         <div className="grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:gap-20">
-          <Reveal>
-            <h2 className="font-serif text-[clamp(1.75rem,3.6vw,2.75rem)] leading-tight">
+          <div>
+            <h2
+              data-split
+              className="font-serif text-[clamp(1.75rem,3.6vw,2.75rem)] leading-tight"
+            >
               {cta.title}
             </h2>
 
             <span
               aria-hidden
+              data-rule
+              data-rule-delay={300}
               className="hairline mt-8 w-20 bg-gold-dim opacity-70"
             />
 
-            <p className="mt-8 max-w-[34ch] text-sm leading-relaxed text-wine-ink/70">
+            <p
+              data-reveal
+              data-reveal-delay={200}
+              className="mt-8 max-w-[34ch] text-sm leading-relaxed text-wine-ink/70"
+            >
               {cta.note}
             </p>
-          </Reveal>
+          </div>
 
           <Reveal delay={120}>
             <form noValidate onSubmit={handleSubmit}>
