@@ -25,28 +25,35 @@ export function PackagesList() {
           name="package"
           className="disclosure group border-t border-wine-ink/15 last:border-b"
         >
-          <summary className="flex cursor-pointer list-none items-start gap-4 py-7 [&::-webkit-details-marker]:hidden">
-            <span className="min-w-0 flex-1">
-              {/* Надписи «Чаще всего выбирают» здесь нет: в компактном
-                  списке популярный формат помечает только золотая кнопка. */}
-              <span className="block font-serif text-[1.6rem] leading-none text-wine-ink">
-                {item.name}
-              </span>
+          {/*
+            Название тарифа — h3: под ним идут h4 «Что входит» и другие,
+            и без него уровень заголовков перескакивал с h2 сразу на h4.
 
-              <span className="mt-2.5 block text-caption text-wine-ink/50 uppercase">
-                {item.audience}
-              </span>
-
-              <span className="mt-4 block text-[1.25rem] leading-none tracking-[0.01em] text-wine-ink tabular-nums">
-                {item.price}
-              </span>
-            </span>
+            Сетка задана самому summary, без обёртки: внутри summary
+            допустимы только строчные элементы и один заголовок, div
+            туда класть нельзя. Плюс стоит во второй колонке на все
+            три строки.
+          */}
+          <summary className="grid cursor-pointer list-none grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 py-7 [&::-webkit-details-marker]:hidden">
+            {/* Надписи «Чаще всего выбирают» здесь нет: в компактном
+                списке популярный формат помечает только золотая кнопка. */}
+            <h3 className="font-serif text-[1.6rem] leading-none text-wine-ink">
+              {item.name}
+            </h3>
 
             <span
               aria-hidden
-              className="mt-1 text-xl leading-none text-gold-dim transition-transform duration-300 group-open:rotate-45 motion-reduce:transform-none"
+              className="row-span-3 mt-1 text-xl leading-none text-gold-dim transition-transform duration-300 group-open:rotate-45 motion-reduce:transform-none"
             >
               +
+            </span>
+
+            <span className="mt-2.5 block text-caption text-wine-ink/65 uppercase">
+              {item.audience}
+            </span>
+
+            <span className="mt-4 block text-[1.25rem] leading-none tracking-[0.01em] text-wine-ink tabular-nums">
+              {item.price}
             </span>
           </summary>
 
@@ -64,7 +71,7 @@ export function PackagesList() {
                   {block.items.map((line) => (
                     <li
                       key={line}
-                      className="flex gap-3 py-1 text-[0.8125rem] leading-relaxed text-wine-ink/65"
+                      className="flex gap-3 py-1 text-[0.8125rem] leading-relaxed text-wine-ink/70"
                     >
                       <span aria-hidden className="text-gold-dim">
                         &mdash;

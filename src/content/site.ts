@@ -2,8 +2,6 @@ import { typo, typoDeep } from "@/lib/typography";
 
 export const site = typoDeep({
   name: "LUSI Wedding",
-  /** Вордмарк набран латиницей — так же, как в макете. */
-  wordmark: { first: "LUSI", second: "WEDDING" },
   title: "LUSI Wedding — свадебное агентство",
   description:
     "Организация свадеб под ключ: концепция, подготовка и продюсирование дня. Свадьбы, в которых узнают именно вас.",

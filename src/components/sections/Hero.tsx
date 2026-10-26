@@ -16,6 +16,11 @@ import { Typo } from "@/components/ui/Typo";
  * а next/image умеет менять только размер, но не сам файл. Оба файла уже
  * подготовлены под свои пропорции, поэтому оптимизация здесь не нужна.
  */
+/** Тот же кадр в другом формате: hero.jpg → hero.avif. */
+function variant(src: string | null, format: "avif" | "webp") {
+  return src ? src.replace(/\.jpg$/, `.${format}`) : undefined;
+}
+
 export function Hero() {
   return (
     <section
@@ -23,11 +28,33 @@ export function Hero() {
       className="relative isolate flex min-h-[calc(100svh-var(--header-h))] flex-col justify-end overflow-hidden bg-wine-veil lg:block lg:h-[min(56vw,806px)] lg:min-h-0"
     >
       <div className="absolute inset-0 -z-10">
+        {/*
+          Рядом с каждым JPG лежат AVIF и WebP того же кадра — почти вдвое
+          легче (175 → 93 КБ на десктопе). Браузер берёт первый источник,
+          который подходит по ширине экрана и формату, поэтому порядок
+          важен: сначала все варианты для широкого экрана, затем для
+          телефона, внутри — от лёгкого формата к запасному JPG.
+        */}
         <picture>
+          {(["avif", "webp"] as const).map((format) => (
+            <source
+              key={`wide-${format}`}
+              media="(min-width: 1024px)"
+              type={`image/${format}`}
+              srcSet={variant(media.hero.src, format)}
+            />
+          ))}
           <source
             media="(min-width: 1024px)"
             srcSet={media.hero.src ?? undefined}
           />
+          {(["avif", "webp"] as const).map((format) => (
+            <source
+              key={`narrow-${format}`}
+              type={`image/${format}`}
+              srcSet={variant(media.heroMobile.src, format)}
+            />
+          ))}
           <img
             src={media.heroMobile.src ?? undefined}
             alt={media.hero.label}
@@ -61,17 +88,32 @@ export function Hero() {
           до 29% — пара строк осталась на месте по центру и с прежним
           просветом в 43px.
         */}
-        <span
-          role="img"
-          aria-label={site.wordmark.first}
-          className="wordmark wordmark-lusi block w-[40.5vw] text-gold lg:absolute lg:top-[29%] lg:left-(--gutter) lg:w-[min(34.73vw,30.93rem)]"
-        />
+        {/*
+          Главный заголовок страницы. Других h1 на сайте нет, а без него
+          поисковик и скринридер не знают, о чём страница.
 
-        <span
-          role="img"
-          aria-label={site.wordmark.second}
-          className="wordmark wordmark-wedding block w-[90.5vw] text-cream lg:absolute lg:top-[62%] lg:left-[20%] lg:w-[min(77.55vw,69.06rem)]"
-        />
+          Текст в нём настоящий, но скрыт визуально: видно знак, а
+          прочитано будет название целиком. Сами маски помечены как
+          декоративные, иначе «LUSI WEDDING» прозвучало бы дважды.
+
+          У h1 нет position, поэтому строки на десктопе по-прежнему
+          отсчитываются от контейнера, а не от заголовка.
+        */}
+        <h1>
+          <span className="sr-only">{site.title}</span>
+
+          <span
+            aria-hidden
+            data-wordmark="first"
+            className="wordmark wordmark-lusi block w-[40.5vw] text-gold lg:absolute lg:top-[29%] lg:left-(--gutter) lg:w-[min(34.73vw,30.93rem)]"
+          />
+
+          <span
+            aria-hidden
+            data-wordmark="second"
+            className="wordmark wordmark-wedding block w-[90.5vw] text-cream lg:absolute lg:top-[62%] lg:left-[20%] lg:w-[min(77.55vw,69.06rem)]"
+          />
+        </h1>
 
         <div className="mt-9 lg:absolute lg:top-[69%] lg:left-(--gutter) lg:mt-0">
           <span aria-hidden className="hairline w-14" />

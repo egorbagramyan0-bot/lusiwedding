@@ -21,8 +21,9 @@ type Props = {
 /**
  * Место под фотографию.
  *
- * Пока src === null, рисуется заглушка с именем ожидаемого файла — по ней
- * видно, какой кадр и в какой пропорции нужен. Как только путь появится,
+ * Пока src === null, рисуется заглушка. В разработке на ней имя
+ * ожидаемого файла и пропорция — видно, какой кадр нужен; в собранном
+ * сайте — только знак агентства. Как только путь появится,
  * на этом же месте окажется next/image без правок в разметке.
  */
 export function MediaFrame({
@@ -88,6 +89,25 @@ function Placeholder({
   tone: "dark" | "light";
   fill: boolean;
 }) {
+  /*
+    Подпись с именем файла — подсказка для того, кто готовит съёмку,
+    а не для посетителя. В собранном сайте вместо неё стоит знак
+    агентства: пустой слот выглядит задуманной паузой, а не забытой
+    служебной надписью «images/team/01-manager.jpg».
+  */
+  if (process.env.NODE_ENV === "production") {
+    return (
+      <div aria-hidden className="absolute inset-0 grid place-items-center">
+        <span
+          className={cn(
+            "logo-mask block w-[38%] max-w-28",
+            tone === "dark" ? "text-gold/25" : "text-gold-dim/25",
+          )}
+        />
+      </div>
+    );
+  }
+
   const muted = tone === "dark" ? "text-cream/40" : "text-wine-ink/45";
   const accent = tone === "dark" ? "text-gold/60" : "text-gold-dim/80";
 

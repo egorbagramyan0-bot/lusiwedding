@@ -25,7 +25,7 @@ const EMPTY: Values = { name: "", contact: "", date: "", message: "" };
 
 /** Общий вид поля: прозрачный фон и волосяная линия снизу. */
 const field =
-  "w-full border-b bg-transparent py-3 text-[0.9375rem] text-wine-ink outline-none transition-colors placeholder:text-wine-ink/30 focus:border-gold-dim";
+  "w-full border-b bg-transparent py-3 text-[0.9375rem] text-wine-ink outline-none transition-colors placeholder:text-wine-ink/65 focus:border-gold-dim";
 const labelText = "block text-caption text-gold-dim uppercase";
 
 export function Cta() {
@@ -102,7 +102,7 @@ export function Cta() {
               className="hairline mt-8 w-20 bg-gold-dim opacity-70"
             />
 
-            <p className="mt-8 max-w-[34ch] text-sm leading-relaxed text-wine-ink/55">
+            <p className="mt-8 max-w-[34ch] text-sm leading-relaxed text-wine-ink/70">
               {cta.note}
             </p>
           </Reveal>
@@ -198,7 +198,7 @@ export function Cta() {
                     aria-describedby={errors.consent ? "lead-consent-error" : undefined}
                     className="mt-0.5 size-4 shrink-0 accent-gold-dim"
                   />
-                  <span className="text-[0.8125rem] leading-relaxed text-wine-ink/60">
+                  <span className="text-[0.8125rem] leading-relaxed text-wine-ink/70">
                     {leadForm.consent}
                   </span>
                 </label>
@@ -260,7 +260,7 @@ function Field({
       <label htmlFor={id} className={labelText}>
         {label}
         {hint ? (
-          <span className="ml-2 normal-case text-wine-ink/35">{hint}</span>
+          <span className="ml-2 normal-case text-wine-ink/65">{hint}</span>
         ) : null}
       </label>
       <div className="mt-2">{children}</div>

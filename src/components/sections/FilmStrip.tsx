@@ -17,6 +17,7 @@ export function FilmStrip() {
 
   return (
     <div
+      role="group"
       className="film-strip relative overflow-hidden bg-noir py-3"
       aria-label="Кадры со свадеб"
     >
@@ -24,9 +25,17 @@ export function FilmStrip() {
         {cells.map((frame, index) => {
           // нумерация кадров идёт подряд, как на настоящей плёнке
           const number = 41 + index;
+          // Кадры повторены четыре раза ради бесшовной петли. Скринридеру
+          // достаточно первого набора: иначе каждый кадр зачитывался бы
+          // четырежды подряд.
+          const copy = index >= filmFrames.length;
 
           return (
-            <div key={`${frame.file}-${index}`} className={CELL}>
+            <div
+              key={`${frame.file}-${index}`}
+              className={CELL}
+              aria-hidden={copy || undefined}
+            >
               <div className="flex items-baseline justify-between px-1 text-[10px] tracking-[0.2em] text-gold/70">
                 <span aria-hidden>400TX</span>
                 <span aria-hidden>{number}</span>

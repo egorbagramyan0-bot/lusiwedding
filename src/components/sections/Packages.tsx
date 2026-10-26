@@ -28,7 +28,7 @@ export function Packages() {
             <h2 className="max-w-[24ch] font-serif text-[clamp(1.8rem,3.6vw,2.85rem)] leading-[1.15]">
               {packagesTitle}
             </h2>
-            <p className="max-w-[46ch] text-sm leading-relaxed text-wine-ink/55">
+            <p className="max-w-[46ch] text-sm leading-relaxed text-wine-ink/70">
               {packagesLead}
             </p>
           </div>
@@ -60,7 +60,7 @@ export function Packages() {
                 <span
                   className={cn(
                     "text-caption uppercase",
-                    item.featured ? "text-gold-dim" : "text-wine-ink/40",
+                    item.featured ? "text-gold-dim" : "text-wine-ink/65",
                   )}
                 >
                   {item.eyebrow}
@@ -70,7 +70,7 @@ export function Packages() {
                   {item.name}
                 </h3>
 
-                <span className="mt-4 text-caption text-wine-ink/50 uppercase">
+                <span className="mt-4 text-caption text-wine-ink/65 uppercase">
                   {item.audience}
                 </span>
 
@@ -79,7 +79,7 @@ export function Packages() {
                 </p>
 
                 <div className="mt-8">
-                  <span className="block text-caption text-wine-ink/40 uppercase">
+                  <span className="block text-caption text-wine-ink/65 uppercase">
                     {item.priceLabel}
                   </span>
                   <span className="mt-2 block text-[clamp(1.25rem,1.7vw,1.5rem)] leading-none tracking-[0.01em] tabular-nums">
@@ -107,7 +107,7 @@ export function Packages() {
                         {block.items.map((line) => (
                           <li
                             key={line}
-                            className="flex gap-3 py-1.5 text-[0.8125rem] leading-relaxed text-wine-ink/60"
+                            className="flex gap-3 py-1.5 text-[0.8125rem] leading-relaxed text-wine-ink/70"
                           >
                             <span aria-hidden className="text-gold-dim">
                               &mdash;
