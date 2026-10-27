@@ -133,8 +133,15 @@
     font-family: var(--font-sans);
     font-size: 1rem;
     line-height: 1.6;
-    /* ни один блок не должен растягивать страницу вбок */
+    /*
+      Ни один блок не должен растягивать страницу вбок. clip, а не
+      hidden: hidden делает body прокручиваемым контейнером, и во
+      встроенных браузерах на WebKit (Telegram на iPhone) это ломает
+      инерцию прокрутки и липкую шапку. Где clip не поддерживается,
+      остаётся hidden из строки выше.
+    */
     overflow-x: hidden;
+    overflow-x: clip;
   }
 
   /* якоря не должны уезжать под фиксированную шапку */
@@ -178,7 +185,13 @@
     will-change: transform;
   }
 
-  .film-strip:hover .film-track {
+  /*
+    Лента стоит, пока её не видно (атрибут ставит Motion.tsx), и под
+    курсором. Крутить её за кадром незачем: это постоянная работа
+    видеокарты, пока посетитель листает остальную страницу.
+  */
+  .film-strip:hover .film-track,
+  .film-strip[data-offscreen] .film-track {
     animation-play-state: paused;
   }
 
@@ -328,20 +341,25 @@
   время анимации.
 */
 @media (prefers-reduced-motion: no-preference) {
+  /*
+    Отдельные свойства translate и scale, а не transform: анимации идут
+    через Web Animations API и двигают именно их (см. Motion.tsx). Сдвиг,
+    оставленный в transform, сложился бы с анимируемым translate.
+  */
   [data-reveal] {
     opacity: 0;
-    transform: translateY(28px);
+    translate: 0 28px;
   }
 
   [data-rule],
   [data-hero-rule] {
-    transform: scaleX(0);
+    scale: 0 1;
     transform-origin: left center;
   }
 
   /* поднимается из-под края родителя — у родителя overflow: clip */
   [data-rise] {
-    transform: translateY(105%);
+    translate: 0 105%;
   }
 
   /* до разбивки на строки: иначе заголовок мелькнёт целиком */
@@ -350,17 +368,17 @@
   }
 
   [data-hero-photo] {
-    transform: scale(1.08);
+    scale: 1.08;
   }
 
   [data-wordmark] {
     clip-path: inset(100% 0 0 0);
-    transform: translateY(18%);
+    translate: 0 18%;
   }
 
   [data-hero-fade] {
     opacity: 0;
-    transform: translateY(14px);
+    translate: 0 14px;
   }
 
   /*
@@ -380,7 +398,8 @@
 @keyframes hero-failsafe {
   to {
     clip-path: inset(0);
-    transform: none;
+    translate: none;
+    scale: none;
     opacity: 1;
   }
 }

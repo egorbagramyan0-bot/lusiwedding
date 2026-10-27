@@ -74,7 +74,7 @@ export default function RootLayout({
           тот же, что в блоке начальных состояний.
         */}
         <noscript>
-          <style>{`[data-reveal],[data-rule],[data-rise],[data-split],[data-hero-photo],[data-wordmark],[data-hero-rule],[data-hero-fade]{opacity:1 !important;transform:none !important;visibility:visible !important;clip-path:none !important;animation:none !important}`}</style>
+          <style>{`[data-reveal],[data-rule],[data-rise],[data-split],[data-hero-photo],[data-wordmark],[data-hero-rule],[data-hero-fade]{opacity:1 !important;transform:none !important;translate:none !important;scale:none !important;visibility:visible !important;clip-path:none !important;animation:none !important}`}</style>
         </noscript>
       </head>
       <body className="antialiased">

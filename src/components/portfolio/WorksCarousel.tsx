@@ -103,7 +103,12 @@ export function WorksCarousel({
 
         el.style.transform = `translate(-50%, -50%) translateX(${(SPREAD * d).toFixed(1)}px) translateZ(${(-DEPTH * d).toFixed(1)}px) rotateY(${(TILT * clamp(d, 0, 1)).toFixed(2)}deg)`;
         el.style.opacity = opacity.toFixed(3);
-        el.style.filter = `brightness(${brightness.toFixed(3)}) blur(${blur.toFixed(2)}px)`;
+        // Невидимой карточке фильтр ни к чему: с ним браузер держит её
+        // отдельным слоем и пересчитывает размытие на каждом кадре.
+        el.style.filter =
+          opacity > 0.01
+            ? `brightness(${brightness.toFixed(3)}) blur(${blur.toFixed(2)}px)`
+            : "none";
         el.style.zIndex = String(Math.round(2000 - d * 20));
         el.style.pointerEvents = opacity > 0.05 ? "auto" : "none";
       });

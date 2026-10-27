@@ -1,15 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import {
-  animate,
-  createScope,
-  createTimeline,
-  onScroll,
-  splitText,
-  stagger,
-  utils,
-} from "animejs";
+import { animate, createScope, onScroll, splitText, stagger, waapi } from "animejs";
 
 /**
  * Все анимации сайта — anime.js, в одном месте.
@@ -29,8 +21,8 @@ import {
  * плюс data-settle — кадр внутри блока «оседает» из лёгкого
  * увеличения, пока блок поднимается. Задержки — data-*-delay в мс.
  *
- * Первый экран — отдельная постановка: вступление при загрузке и
- * параллакс фотографии при прокрутке.
+ * Первый экран — отдельная постановка: вступление при загрузке и, на
+ * компьютере, параллакс фотографии при прокрутке.
  *
  * Начальные состояния (откуда стартуют движения) заданы в globals.css,
  * а не здесь: страница рисуется раньше, чем загружается скрипт, и
@@ -39,17 +31,45 @@ import {
  * Кривые — только плавные замедления, без отскоков и пружин: сайт
  * спокойный, и движение должно быть таким же.
  *
- * Кто запускает разовые появления. Сами движения — anime.js, а момент
- * «элемент вошёл в кадр» ловит IntersectionObserver. Сначала триггером
- * был onScroll из anime.js, но при проверке он терял срабатывания у
- * соседей разбиваемых заголовков: splitText перестраивает заголовок
- * после загрузки шрифтов, и пять блоков рядом так и не появились при
- * обычной прокрутке. IntersectionObserver считает пересечение в момент
- * прокрутки и любые сдвиги вёрстки учитывает сам. onScroll остался там,
- * где он незаменим: в параллаксе, привязанном к прокрутке непрерывно.
+ * ПЛАВНОСТЬ НА ТЕЛЕФОНЕ
+ *
+ * Все разовые движения идут через waapi.animate — Web Animations API.
+ * Такие анимации браузер ведёт на видеокарте, отдельно от основного
+ * потока, и они не дёргаются, пока страница прокручивается или
+ * загружается. Особенно это заметно во встроенных браузерах — Telegram,
+ * Instagram: там основной поток медленнее, а прокрутка идёт своим ходом.
+ *
+ * Отсюда два правила:
+ *
+ * — анимируются только opacity, translate, scale и clip-path: их
+ *   видеокарта ведёт сама. Отдельные свойства translate и scale, а не
+ *   transform, — и в начальных состояниях в CSS тоже, иначе сдвиг из
+ *   transform сложился бы с анимируемым translate;
+ * — кривые заданы через cubic-bezier, а не out(3): кривые anime.js
+ *   превращаются в linear(), и Safari с ними уводит анимацию обратно в
+ *   основной поток. На iPhone так работает и браузер Telegram.
+ *
+ * Параллакс фото — единственное движение, привязанное к прокрутке, —
+ * включён только там, где есть мышь. На телефоне прокрутка идёт в
+ * отдельном потоке, а скрипт, двигающий фото, отстаёт от неё на кадр:
+ * фото дрожит относительно страницы с первого же движения пальцем.
+ *
+ * Кто запускает появления. Момент «элемент вошёл в кадр» ловит
+ * IntersectionObserver: onScroll из anime.js при проверке терял
+ * срабатывания у соседей разбиваемых заголовков. IntersectionObserver
+ * считает пересечение сам и любые сдвиги вёрстки учитывает.
  */
 
 type Cleanup = () => void;
+
+/*
+  Кривые замедления в виде cubic-bezier — их Safari ведёт на видеокарте.
+  Это те же «out cubic», «out quart» и «out expo», что раньше были
+  записаны как out(3), out(4) и outExpo.
+*/
+const OUT_3 = "cubic-bezier(0.33, 1, 0.68, 1)";
+const OUT_4 = "cubic-bezier(0.25, 1, 0.5, 1)";
+const OUT_EXPO = "cubic-bezier(0.16, 1, 0.3, 1)";
 
 /** Порог появления: верх элемента поднялся выше 90% высоты окна. */
 const ROOT_MARGIN = "0px 0px -10% 0px";
@@ -92,16 +112,25 @@ const delayOf = (el: HTMLElement, key: string) =>
 export function Motion() {
   useEffect(() => {
     const scope = createScope({
-      mediaQueries: { reduce: "(prefers-reduced-motion: reduce)" },
+      mediaQueries: {
+        reduce: "(prefers-reduced-motion: reduce)",
+        // мышь, а не палец: параллакс только здесь
+        pointer: "(hover: hover) and (pointer: fine)",
+      },
     }).add((self) => {
       // Анимация выключена в системе: начальные состояния в CSS в этом
       // случае не применяются, всё и так стоит на местах.
       if (self?.matches.reduce) return;
 
-      heroIntro();
-      heroParallax();
-
-      const cleanups = [reveals(), rules(), rises(), splitHeadings()];
+      const cleanups = [
+        heroIntro(),
+        self?.matches.pointer ? heroParallax() : () => {},
+        pauseFilmOffscreen(),
+        reveals(),
+        rules(),
+        rises(),
+        splitHeadings(),
+      ];
       return () => cleanups.forEach((cleanup) => cleanup());
     });
 
@@ -117,57 +146,60 @@ export function Motion() {
  * Вступление первого экрана: кадр оседает, знак поднимается из-под
  * своей нижней кромки — сначала «LUSI», следом «WEDDING», — затем
  * прочерчивается линия и проявляется подпись.
+ *
+ * Последовательность собрана задержками, а не таймлайном: у WAAPI
+ * таймлайна нет, а на первом экране движения идут, пока страница ещё
+ * догружается, — именно тут видеокарта важнее всего.
  */
-function heroIntro() {
+function heroIntro(): Cleanup {
   const hero = document.querySelector("[data-hero]");
-  if (!hero) return;
+  if (!hero) return () => {};
 
-  createTimeline({ defaults: { ease: "out(4)" } })
-    .add(
-      hero.querySelectorAll("[data-hero-photo]"),
-      { scale: [1.08, 1], duration: 2600, ease: "out(3)" },
-      0,
-    )
-    .add(
-      hero.querySelectorAll("[data-wordmark]"),
-      {
-        clipPath: ["inset(100% 0% 0% 0%)", "inset(0% 0% 0% 0%)"],
-        y: ["18%", "0%"],
-        duration: 1300,
-      },
-      stagger(170, { start: 250 }),
-    )
-    .add(
-      hero.querySelectorAll("[data-hero-rule]"),
-      { scaleX: [0, 1], duration: 900, ease: "outExpo" },
-      950,
-    )
-    .add(
-      hero.querySelectorAll("[data-hero-fade]"),
-      { opacity: [0, 1], y: [14, 0], duration: 1000 },
-      1050,
-    )
-    // Первый кадр — сразу, а не на следующем тике. Иначе параллакс,
-    // который создаётся следом на том же фото, успевает записать свой
-    // transform без масштаба, и кадр на мгновение прыгает 1.08 → 1 → 1.08.
-    .init();
+  const animations = [
+    waapi.animate(hero.querySelectorAll("[data-hero-photo]"), {
+      scale: [1.08, 1],
+      duration: 2600,
+      ease: OUT_3,
+    }),
+    waapi.animate(hero.querySelectorAll("[data-wordmark]"), {
+      clipPath: ["inset(100% 0% 0% 0%)", "inset(0% 0% 0% 0%)"],
+      translate: ["0 18%", "0 0"],
+      duration: 1300,
+      delay: stagger(170, { start: 250 }),
+      ease: OUT_4,
+    }),
+    waapi.animate(hero.querySelectorAll("[data-hero-rule]"), {
+      scale: ["0 1", "1 1"],
+      duration: 900,
+      delay: 950,
+      ease: OUT_EXPO,
+    }),
+    waapi.animate(hero.querySelectorAll("[data-hero-fade]"), {
+      opacity: [0, 1],
+      translate: ["0 14px", "0 0"],
+      duration: 1000,
+      delay: 1050,
+      ease: OUT_4,
+    }),
+  ];
+
+  return () => animations.forEach((animation) => animation.revert());
 }
 
 /**
  * Фото первого экрана уходит вниз медленнее, чем прокручивается
- * страница, — появляется глубина. Движение привязано к прокрутке
- * напрямую: от момента, когда верх кадра упирается в верх окна, до
- * момента, когда кадр уходит целиком.
+ * страница, — появляется глубина. Только там, где есть мышь: см. шапку
+ * файла, почему не на телефоне.
  *
- * Открывшаяся сверху полоса всегда за пределами окна: кадр съезжает на
- * 12% своей высоты, а сама секция к этому времени уходит выше на всю.
+ * Движение двигает transform, а вступление — отдельное свойство scale,
+ * поэтому они не мешают друг другу.
  */
-function heroParallax() {
+function heroParallax(): Cleanup {
   const hero = document.querySelector("[data-hero]");
   const photo = hero?.querySelector("[data-hero-photo]");
-  if (!hero || !photo) return;
+  if (!hero || !photo) return () => {};
 
-  animate(photo, {
+  const animation = animate(photo, {
     y: ["0%", "12%"],
     ease: "linear",
     autoplay: onScroll({
@@ -177,44 +209,94 @@ function heroParallax() {
       sync: true,
     }),
   });
+  return () => animation.revert();
+}
+
+/**
+ * Лента киноплёнки крутится бесконечно, но видна только у первого
+ * экрана. Всё остальное время она останавливается — видеокарте не
+ * нужно гонять её, пока посетитель листает тарифы.
+ */
+function pauseFilmOffscreen(): Cleanup {
+  const strips = document.querySelectorAll<HTMLElement>(".film-strip");
+  if (!strips.length) return () => {};
+
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      (entry.target as HTMLElement).toggleAttribute(
+        "data-offscreen",
+        !entry.isIntersecting,
+      );
+    }
+  });
+  strips.forEach((strip) => observer.observe(strip));
+
+  return () => {
+    observer.disconnect();
+    strips.forEach((strip) => strip.removeAttribute("data-offscreen"));
+  };
 }
 
 /** Блоки: поднимаются на 28px и проявляются; кадры внутри оседают. */
 function reveals(): Cleanup {
-  const stops = [...document.querySelectorAll<HTMLElement>("[data-reveal]")].map(
-    (el) => {
-      const timeline = createTimeline({
-        delay: delayOf(el, "revealDelay"),
-        defaults: { ease: "out(3)" },
+  const cleanups = [
+    ...document.querySelectorAll<HTMLElement>("[data-reveal]"),
+  ].map((el) => {
+    const delay = delayOf(el, "revealDelay");
+    const animations = [
+      waapi.animate(el, {
+        opacity: [0, 1],
+        translate: ["0 28px", "0 0"],
+        duration: 1100,
+        delay,
+        ease: OUT_3,
         autoplay: false,
-      }).add(el, { opacity: [0, 1], y: [28, 0], duration: 1100 }, 0);
+      }),
+    ];
 
-      const photos = el.querySelectorAll("[data-settle] img");
-      if (photos.length) {
-        timeline.add(photos, { scale: [1.12, 1], duration: 1800 }, 0);
-      }
+    const photos = el.querySelectorAll("[data-settle] img");
+    if (photos.length) {
+      animations.push(
+        waapi.animate(photos, {
+          scale: [1.12, 1],
+          duration: 1800,
+          delay,
+          ease: OUT_3,
+          autoplay: false,
+        }),
+      );
+    }
 
-      return whenVisible(el, () => timeline.play());
-    },
-  );
-  return () => stops.forEach((stop) => stop());
+    const stop = whenVisible(el, () =>
+      animations.forEach((animation) => animation.play()),
+    );
+    return () => {
+      stop();
+      animations.forEach((animation) => animation.revert());
+    };
+  });
+  return () => cleanups.forEach((cleanup) => cleanup());
 }
 
 /** Золотые черты прочерчиваются от левого края. */
 function rules(): Cleanup {
-  const stops = [...document.querySelectorAll<HTMLElement>("[data-rule]")].map(
-    (el) => {
-      const animation = animate(el, {
-        scaleX: [0, 1],
-        duration: 1200,
-        delay: delayOf(el, "ruleDelay"),
-        ease: "outExpo",
-        autoplay: false,
-      });
-      return whenVisible(el, () => animation.play());
-    },
-  );
-  return () => stops.forEach((stop) => stop());
+  const cleanups = [
+    ...document.querySelectorAll<HTMLElement>("[data-rule]"),
+  ].map((el) => {
+    const animation = waapi.animate(el, {
+      scale: ["0 1", "1 1"],
+      duration: 1200,
+      delay: delayOf(el, "ruleDelay"),
+      ease: OUT_EXPO,
+      autoplay: false,
+    });
+    const stop = whenVisible(el, () => animation.play());
+    return () => {
+      stop();
+      animation.revert();
+    };
+  });
+  return () => cleanups.forEach((cleanup) => cleanup());
 }
 
 /**
@@ -223,30 +305,34 @@ function rules(): Cleanup {
  * места.
  */
 function rises(): Cleanup {
-  const stops = [...document.querySelectorAll<HTMLElement>("[data-rise]")].map(
-    (el) => {
-      const animation = animate(el, {
-        y: ["105%", "0%"],
-        duration: 1200,
-        delay: delayOf(el, "riseDelay"),
-        ease: "out(4)",
-        autoplay: false,
-      });
-      return whenVisible(el.parentElement ?? el, () => animation.play());
-    },
-  );
-  return () => stops.forEach((stop) => stop());
+  const cleanups = [
+    ...document.querySelectorAll<HTMLElement>("[data-rise]"),
+  ].map((el) => {
+    const animation = waapi.animate(el, {
+      translate: ["0 105%", "0 0"],
+      duration: 1200,
+      delay: delayOf(el, "riseDelay"),
+      ease: OUT_4,
+      autoplay: false,
+    });
+    const stop = whenVisible(el.parentElement ?? el, () => animation.play());
+    return () => {
+      stop();
+      animation.revert();
+    };
+  });
+  return () => cleanups.forEach((cleanup) => cleanup());
 }
 
 /**
  * Заголовки разбиваются на строки, и строки по очереди поднимаются
  * из-под своей нижней кромки.
  *
- * splitText ждёт загрузки шрифтов и пересчитывает строки при каждом
- * изменении ширины, поэтому анимация объявлена через addEffect — он
- * вызывается после каждой разбивки. Если заголовок уже проявился,
- * повторно его не прячем: иначе поворот телефона заново проигрывал бы
- * появление всех заголовков на странице.
+ * splitText пересчитывает строки при каждом изменении ширины, поэтому
+ * анимация объявлена через addEffect — он вызывается после каждой
+ * разбивки. Если заголовок уже проявился, повторно его не прячем:
+ * иначе поворот телефона заново проигрывал бы появление всех
+ * заголовков на странице.
  *
  * Скринридер читает заголовок целиком: splitText по умолчанию кладёт
  * рядом скрытую копию исходного текста, а строки прячет от него.
@@ -257,7 +343,7 @@ function rises(): Cleanup {
  * «уменьшения движения» в системе), отложенная разбивка всё равно
  * срабатывает, а новая ложится поверх неё. Заголовок оказывается разбит
  * дважды: все слова уходят в невидимую копию для скринридера, и
- * заголовок схлопывается в ноль — так пропадал «Свадьбы LUSI Wedding».
+ * заголовок схлопывается в ноль.
  */
 function splitHeadings(): Cleanup {
   let cancelled = false;
@@ -283,7 +369,8 @@ function splitHeading(heading: HTMLElement): Cleanup {
 
   const split = splitText(heading, { lines: { wrap: "clip" } });
 
-  split.addEffect(({ lines }) => {
+  // splitText типизирует строки как any[] — уточняем
+  split.addEffect(({ lines }: { lines: HTMLElement[] }) => {
     dispose();
     dispose = () => {};
 
@@ -292,23 +379,23 @@ function splitHeading(heading: HTMLElement): Cleanup {
     } else {
       // Строки прячутся до того, как заголовок станет видимым, —
       // иначе он мелькнёт целиком между разбивкой и анимацией.
-      utils.set(lines, { y: "100%" });
+      lines.forEach((line) => (line.style.translate = "0 100%"));
     }
     heading.style.visibility = "visible";
     if (revealed) return;
 
-    const animation = animate(lines, {
-      y: ["100%", "0%"],
+    const animation = waapi.animate(lines, {
+      translate: ["0 100%", "0 0"],
       duration: 1150,
       delay: stagger(110, { start: delayOf(heading, "splitDelay") }),
-      ease: "out(4)",
+      ease: OUT_4,
       autoplay: false,
-      onBegin: () => {
-        revealed = true;
-      },
       onComplete: () => unclip(lines),
     });
-    const stop = whenVisible(heading, () => animation.play());
+    const stop = whenVisible(heading, () => {
+      revealed = true;
+      animation.play();
+    });
 
     dispose = () => {
       stop();
@@ -325,9 +412,9 @@ function splitHeading(heading: HTMLElement): Cleanup {
 
 /**
  * Снимает обрезку со строк заголовка. Маска нужна, только пока строка
- * поднимается из-под своей кромки; стоящую на месте она подрезает: у
- * Cormorant при плотном интерлиньяже хвосты «у» и «р» выходят за высоту
- * строки на пару пикселей.
+ * поднимается из-под своей кромки; стоящую на месте она подрезает: при
+ * плотном интерлиньяже хвосты «у» и «р» выходят за высоту строки на
+ * пару пикселей.
  */
 function unclip(lines: HTMLElement[]) {
   lines.forEach((line) => {
